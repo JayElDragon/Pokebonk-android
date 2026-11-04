@@ -1,0 +1,15 @@
+# Claves de firma: nunca se suben
+*.keystore
+*.jks
+keystore.properties
+# Compilación
+work-build/
+dist/
+__pycache__/
+# Archivos del juego original y recursos de terceros: no se incluyen en este repositorio
+site/assets/
+site/data/
+site/index.html
+site/legal
+offline.js
+mirror.py
