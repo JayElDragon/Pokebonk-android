@@ -490,3 +490,39 @@ html .mm.jay-home:not(.auth) .mm-top {zoom:1 !important;}
 .jay-update-modal .ju-title { margin: 0 0 6px; text-align: center; font: 900 24px/1.15 var(--font-title); color: #ffe46b; text-shadow: 0 2px 0 #2a1566; }
 .jay-update-modal .ju-version { text-align: center; }
 .jay-update-modal .jd-note { justify-content: center; text-align: center; }
+
+/* ===== HUD de partida estilo Megabonk: sin panel central, solo números con contorno (no tapa la pantalla) =====
+   Se ocultan nombre de la región, puntos de zona, dificultad y clima; quedan zona, cuenta atrás, dinero,
+   precios y reloj en una sola línea fina. Toda la lógica del juego sigue igual. */
+html #ui .hud-top {
+  background: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important;
+  display: flex !important; align-items: center !important; gap: 14px !important;
+  width: auto !important; max-width: none !important; top: 6px !important; pointer-events: none;
+}
+html #ui .hud-top .ht-l { display: flex !important; padding: 0 !important; overflow: visible !important; }
+html #ui .hud-top .ht-biome, html #ui .hud-top .ht-pips, html #ui .hud-top .ht-tier, html #ui .hud-top .ht-weather { display: none !important; }
+html #ui .hud-top .ht-row { flex-wrap: nowrap !important; }
+html #ui .hud-top .ht-c { flex-direction: row !important; align-items: center !important; gap: 14px !important; margin: 0 !important; padding: 0 !important; }
+html #ui .hud-top .ht-r { display: block !important; padding: 0 !important; }
+html #ui .hud-top .ht-zone, html #ui .hud-top .ht-pacts,
+html #ui .hud-top .timer, html #ui .hud-top .wl-gold b, html #ui .hud-top .wl-gold small, html #ui .hud-top .wl-chip,
+html #ui .hud-top .runclock b {
+  color: #fff !important; -webkit-text-stroke: 3px #1b1236; paint-order: stroke fill;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .35);
+}
+html #ui .hud-top .ht-zone { font-size: 12px !important; font-weight: 900; }
+html #ui .hud-top .timer {
+  background: none !important; box-shadow: none !important; padding: 0 !important;
+  font-size: 30px !important; letter-spacing: 1px; line-height: 1 !important;
+}
+html #ui .hud-top .timer::before, html #ui .hud-top .timer::after { display: none !important; }
+html #ui .hud-top .timer.final { color: #ff5a5f !important; }
+html #ui .hud-top .wallet { background: none !important; box-shadow: none !important; padding: 0 !important; gap: 10px !important; }
+html #ui .hud-top .wl-gold b { color: #ffd23a !important; font-size: 17px !important; }
+html #ui .hud-top .wl-gold small { font-size: 11px !important; }
+html #ui .hud-top .wl-prices { border: none !important; padding: 0 !important; gap: 8px !important; }
+html #ui .hud-top .wl-chip { background: none !important; height: auto !important; padding: 0 !important; font-size: 14px !important; }
+html #ui .hud-top .wallet img, html #ui .hud-top .wl-chip img { width: 18px !important; height: 18px !important; }
+html #ui .hud-top .runclock { flex-direction: row !important; }
+html #ui .hud-top .runclock b { font-size: 14px !important; opacity: .85; }
+html #ui .hud-top .runclock small { display: none !important; }

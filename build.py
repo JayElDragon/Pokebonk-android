@@ -36,7 +36,7 @@ shutil.copytree(ROOT/'site',assets/'site',dirs_exist_ok=True)
 dist=ROOT/'dist';dist.mkdir(exist_ok=True)
 def run(command):subprocess.run([str(x) for x in command],check=True)
 run([bt/'aapt2.exe','compile','--dir',ROOT/'android/res','-o',build/'res.zip'])
-run([bt/'aapt2.exe','link','-o',build/'resources.apk','-I',aj,'--manifest',ROOT/'android/AndroidManifest.xml','-A',assets,build/'res.zip','--min-sdk-version','26','--target-sdk-version','35','--version-code','19','--version-name','0.8.92-android19','-0','png','-0','jpg','-0','ogg','-0','glb','-0','woff2','-0','woff'])
+run([bt/'aapt2.exe','link','-o',build/'resources.apk','-I',aj,'--manifest',ROOT/'android/AndroidManifest.xml','-A',assets,build/'res.zip','--min-sdk-version','26','--target-sdk-version','35','--version-code','20','--version-name','0.8.92-android20','-0','png','-0','jpg','-0','ogg','-0','glb','-0','woff2','-0','woff'])
 run([jdk/'bin/javac.exe','-nowarn','-source','11','-target','11','-encoding','UTF-8','-cp',aj,'-d',classes,*list((ROOT/'android/src').rglob('*.java'))])
 run([jdk/'bin/java.exe','-cp',bt/'lib/d8.jar','com.android.tools.r8.D8','--release','--min-api','26','--lib',aj,'--output',build,*list(classes.rglob('*.class'))])
 with zipfile.ZipFile(build/'resources.apk') as zi,zipfile.ZipFile(build/'unsigned.apk','w') as zo:
