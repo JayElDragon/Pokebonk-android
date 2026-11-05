@@ -79,6 +79,19 @@ class Spans:
         return out
 
 
+# Cambios de la 0.8.92 que NO se aplican en la 0.9.9.
+#  6: activaba el modo mando cada fotograma si el stick pasaba de .25 respecto a su reposo; en la 0.9.9 eso se
+#     cumple en reposo y anulaba cada toque (los botones táctiles nunca aparecían). El juego ya cambia a mando
+#     cuando el stick cruza el umbral (variable m), así que basta con el original.
+DROP = {6}
+# Controles táctiles: la 0.9.9 trae su propio joystick y botones para móvil. Los arreglos táctiles de la 0.8.92
+# (1-3, 10-12, 28-43) chocaban con ellos: el personaje no se movía y muchos botones no respondían.
+# Se conserva el 4: tocar la pantalla sale SIEMPRE del modo mando (el original no lo hacía si se usó el mando
+# en los últimos 5 s, y los controles táctiles seguían ocultos).
+TOUCH_0892 = False
+if not TOUCH_0892:
+    DROP |= {1, 2, 3, 10, 11, 12, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39}
+
 # Nombres de la 0.8.92 que el código nuevo usaba y que en la 0.9.9 viven en otro chunk o cambiaron de forma.
 FIX = {
     22: [('PO===n&&LO()', 'CU===n&&EU()')],                       # tooltip actual / cerrar tooltip
@@ -94,6 +107,8 @@ FIX = {
 def port_changes(sp):
     edits = json.load(open(os.path.join(HERE, 'edits-0.9.9.json'), encoding='utf-8'))
     for e in edits:
+        if e['id'] in DROP:
+            continue
         new = e['new']
         for a, b in FIX.get(e['id'], []):
             if a not in new:
@@ -117,15 +132,23 @@ def port_changes(sp):
 
     # --- main: pistas de partida más breves
     sp.add('main', 'Fh=7500,Ih=2500,Lh=.4,Rh={ball', 'Fh=7500,Ih=2500', 'Fh=4000,Ih=1000', 'cambio 23')
-    # --- main: controles táctiles solo tras tocar la pantalla; sin mando activo
-    sp.add('main', 'update(e,t){if(this.run=e,this.show(O&&!Kn&&e.state===`play`&&!e.player.dead),',
-           'update(e,t){if(this.run=e,this.show(O&&!Kn',
-           'update(e,t){if(Kn)this.touchActive=!1;if(this.run=e,this.show((this.touchActive||!window.AndroidMenu&&O)&&!Kn', 'cambios 40-41')
-    sp.add('main', 'this.fs.style.display!==n&&(this.fs.style.display=n),this.touches===0&&(this.lastType===`touch`||this.sawTouchEv)&&(this.stickId>=0||this.looks.size||this.anyOn())&&this.letGo();',
-           'this.fs.style.display!==n&&(this.fs.style.display=n),this.touches===0&&(this.lastType===`touch`||this.sawTouchEv)&&(this.stickId>=0||this.looks.size||this.anyOn())&&this.letGo();',
-           'this.fs.style.display!==n&&(this.fs.style.display=n);', 'cambio 42')
-    sp.add('main', '}destroy(){this.off(),this.show(!1),this.el.remove()}', 'this.off(),this.show(!1),this.el.remove()',
-           'removeEventListener(`pointerdown`,this.activateTouch,!0);this.off(),this.show(!1),this.el.remove()', 'cambio 43')
+    # --- main: controles táctiles solo tras tocar la pantalla; sin mando activo (solo con los arreglos de la 0.8.92)
+    if TOUCH_0892:
+        sp.add('main', 'update(e,t){if(this.run=e,this.show(O&&!Kn&&e.state===`play`&&!e.player.dead),',
+               'update(e,t){if(this.run=e,this.show(O&&!Kn',
+               'update(e,t){if(Kn)this.touchActive=!1;if(this.run=e,this.show((this.touchActive||!window.AndroidMenu&&O)&&!Kn', 'cambios 40-41')
+        sp.add('main', 'this.fs.style.display!==n&&(this.fs.style.display=n),this.touches===0&&(this.lastType===`touch`||this.sawTouchEv)&&(this.stickId>=0||this.looks.size||this.anyOn())&&this.letGo();',
+               'this.fs.style.display!==n&&(this.fs.style.display=n),this.touches===0&&(this.lastType===`touch`||this.sawTouchEv)&&(this.stickId>=0||this.looks.size||this.anyOn())&&this.letGo();',
+               'this.fs.style.display!==n&&(this.fs.style.display=n);', 'cambio 42')
+        sp.add('main', '}destroy(){this.off(),this.show(!1),this.el.remove()}', 'this.off(),this.show(!1),this.el.remove()',
+               'removeEventListener(`pointerdown`,this.activateTouch,!0);this.off(),this.show(!1),this.el.remove()', 'cambio 43')
+    # --- joystick táctil: ninguna rutina de "soltar todo" (mando en menus, entrada en main) lo borra mientras
+    #     el dedo sigue en él; solo releaseStick (al levantar el dedo) lo pone a cero. Con la consola en la mano,
+    #     el mando físico vaciaba el joystick táctil en cada fotograma y el personaje no se movía.
+    sp.add('menus', 'this.held.clear(),this.input.stickX=this.input.stickY=0}', 'this.input.stickX=this.input.stickY=0}',
+           'this.input.touchStick||(this.input.stickX=this.input.stickY=0)}', 'joystick táctil (mando)')
+    sp.add('main', 'e.startsWith(`Mouse`)&&this.release(e);this.mouseDown=[!1,!1,!1],this.stickX=this.stickY=0}',
+           'this.stickX=this.stickY=0}', 'this.touchStick||(this.stickX=this.stickY=0)}', 'joystick táctil (entrada)')
     # --- main: resultados sin clasificación online: "Tus marcas · tier"
     sp.add('main', '{class:`sm-body`},f(e.coop?U(`Clasificación cooperativa`):U(`Clasificación`),',
            'f(e.coop?U(`Clasificación cooperativa`):U(`Clasificación`),',
