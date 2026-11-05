@@ -526,3 +526,16 @@ html #ui .hud-top .wallet img, html #ui .hud-top .wl-chip img { width: 18px !imp
 html #ui .hud-top .runclock { flex-direction: row !important; }
 html #ui .hud-top .runclock b { font-size: 14px !important; opacity: .85; }
 html #ui .hud-top .runclock small { display: none !important; }
+
+/* ===== Revisión 21 ===== */
+/* La Ultimate vuelve a verse con mando: el juego la ocultaba en pantallas táctiles (botón táctil propio). */
+html.pad #ui .hud-bl > .ult, html.pad .hud-bl .ult { display: block !important; }
+html.pad #ui .hud-bl .bl-row > .ult { display: block !important; }
+
+/* Panel del Pokémon arriba a la izquierda: sin la placa blanca; retrato redondo, nombre y datos con contorno. */
+html #ui .hud-tl .tl-plate { background: none !important; box-shadow: none !important; border: none !important; min-width: 0 !important; padding: 4px 8px 4px 40px !important; }
+html #ui .hud-tl .tl-plate::before, html #ui .hud-tl .tl-plate::after { display: none !important; }
+html #ui .hud-tl .tl-name { color: #fff !important; -webkit-text-stroke: 4px #1b1236; paint-order: stroke fill; text-shadow: 0 2px 0 rgba(0,0,0,.35); font-size: 20px !important; }
+html #ui .hud-tl .tl-evo, html #ui .hud-tl .tl-evo * { color: #fff !important; -webkit-text-stroke: 3px #1b1236; paint-order: stroke fill; }
+html #ui .hud-tl .tl-types > * { box-shadow: 0 2px 0 rgba(27,18,54,.6) !important; }
+html #ui .hud-tl .tl-medal { filter: drop-shadow(0 3px 0 rgba(27,18,54,.55)); }

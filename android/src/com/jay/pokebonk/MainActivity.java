@@ -163,6 +163,7 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void setMenuMode(boolean enabled) {
             menuMode = enabled;
+            resetDpad();
             if (!enabled) menuHandler.post(() -> stopHat());
         }
         @JavascriptInterface public void setMenuBindings(int confirm, int back) {
@@ -279,8 +280,45 @@ public class MainActivity extends Activity {
         return null;
     }
 
+    // ---------- cruceta en partida: mueve al jugador ----------
+    // Android entrega la cruceta como teclas DPAD o como ejes HAT según el mando; en ambos casos se pasa al juego
+    // como window.__pbDpad = [x, y] (x: -1 izquierda / 1 derecha; y: -1 arriba / 1 abajo).
+    private int dpadKeyX = 0, dpadKeyY = 0;
+    private float dpadHatX = 0, dpadHatY = 0;
+    private String dpadSent = "0,0";
+
+    private void pushDpad() {
+        float x = Math.max(-1f, Math.min(1f, dpadKeyX + dpadHatX));
+        float y = Math.max(-1f, Math.min(1f, dpadKeyY + dpadHatY));
+        String v = Math.round(x) + "," + Math.round(y);
+        if (v.equals(dpadSent) || web == null) return;
+        dpadSent = v;
+        web.evaluateJavascript("window.__pbDpad=[" + v + "]", null);
+    }
+
+    private boolean playDpadKey(KeyEvent event) {
+        int code = event.getKeyCode();
+        boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
+        switch (code) {
+            case KeyEvent.KEYCODE_DPAD_UP: dpadKeyY = down ? -1 : (dpadKeyY == -1 ? 0 : dpadKeyY); break;
+            case KeyEvent.KEYCODE_DPAD_DOWN: dpadKeyY = down ? 1 : (dpadKeyY == 1 ? 0 : dpadKeyY); break;
+            case KeyEvent.KEYCODE_DPAD_LEFT: dpadKeyX = down ? -1 : (dpadKeyX == -1 ? 0 : dpadKeyX); break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT: dpadKeyX = down ? 1 : (dpadKeyX == 1 ? 0 : dpadKeyX); break;
+            default: return false;
+        }
+        pushDpad();
+        return true;
+    }
+
+    private void resetDpad() {
+        dpadKeyX = dpadKeyY = 0;
+        dpadHatX = dpadHatY = 0;
+        menuHandler.post(this::pushDpad);
+    }
+
     @Override public boolean dispatchKeyEvent(KeyEvent event) {
         int code = event.getKeyCode();
+        if (!menuMode) playDpadKey(event);
         if (event.getAction() == KeyEvent.ACTION_UP && consumedMenuKeys.remove(code)) return true;
         String command = menuCommand(code);
         if (menuMode && command != null && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -299,6 +337,12 @@ public class MainActivity extends Activity {
                 float x = event.getAxisValue(MotionEvent.AXIS_HAT_X);
                 float y = event.getAxisValue(MotionEvent.AXIS_HAT_Y);
                 command = y < -0.5f ? "up" : y > 0.5f ? "down" : x < -0.5f ? "left" : x > 0.5f ? "right" : null;
+            } else {
+                float x = event.getAxisValue(MotionEvent.AXIS_HAT_X);
+                float y = event.getAxisValue(MotionEvent.AXIS_HAT_Y);
+                dpadHatX = x < -0.5f ? -1 : x > 0.5f ? 1 : 0;
+                dpadHatY = y < -0.5f ? -1 : y > 0.5f ? 1 : 0;
+                pushDpad();
             }
             if (command == null) stopHat();
             else if (!command.equals(hatCommand)) {
