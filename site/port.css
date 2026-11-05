@@ -473,6 +473,10 @@ html .mm.jay-home:not(.auth) .mm-top {zoom:1 !important;}
   html.pb-android #ui .ht-r { display:none; }
 }
 
+/* The ultimate cut-in hid the battlefield for 1.3s: play it at twice the speed. The game still removes the node at 1.3s, already invisible. */
+html.pb-android .ultcut, html.pb-android .uc-row { animation-duration:.65s; }
+html.pb-android .uc-band { animation-duration:.16s; }
+
 /* ===== Donaciones (donate.js): botón bajo Ajustes y ventana con el enlace a Ko-fi ===== */
 .jay-has-donate .jay-sidebar .jay-watermark { display: none !important; }
 .jay-sidebar .jay-donate { border-color: #ffd0de !important; background: linear-gradient(#ff7aa2, #e8457a) !important; box-shadow: 0 calc(3 * var(--u)) #9c2450, inset 0 0 0 calc(1 * var(--u)) #fff8 !important; }
