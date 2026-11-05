@@ -16,6 +16,7 @@
     ko: { label: '후원', title: '프로젝트 응원하기', msg: '이 PokéBonk 안드로이드 포트는 JayElDragon의 개인 프로젝트로, 무료이며 광고가 없습니다. 작업을 응원하고 싶다면 Ko-fi에서 자발적으로 후원할 수 있습니다.', note: '후원해도 게임 내 혜택은 없지만, 이 프로젝트의 개발에 도움이 됩니다.', btn: 'Ko-fi에서 후원하기', close: '닫기' },
     ru: { label: 'Пожертвования', title: 'Поддержать проект', msg: 'Этот Android-порт PokéBonk — личный проект JayElDragon, бесплатный и без рекламы. Если хотите поддержать работу, можно сделать добровольное пожертвование на Ko-fi.', note: 'Пожертвования не дают преимуществ в игре и помогают развитию этого проекта.', btn: 'Пожертвовать на Ko-fi', close: 'Закрыть' },
   };
+  T.de = { label: 'Spenden', title: 'Unterstütze das Projekt', msg: 'Dieser Android-Port von PokéBonk ist ein persönliches Projekt von JayElDragon, kostenlos und ohne Werbung. Wenn du die Arbeit unterstützen möchtest, kannst du auf Ko-fi freiwillig spenden.', note: 'Spenden bringen keinen Vorteil im Spiel und helfen bei der Entwicklung dieses Projekts.', btn: 'Auf Ko-fi spenden', close: 'Schließen' };
   const lang = () => {
     const l = (document.documentElement.lang || 'en').toLowerCase();
     if (l === 'zht' || l.startsWith('zh-tw') || l.startsWith('zh-hk') || l.includes('hant')) return 'zht';

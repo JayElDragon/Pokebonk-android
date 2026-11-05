@@ -45,11 +45,13 @@
     updDownload:{ es: 'Descargar actualización', en: 'Download update', pt: 'Baixar atualização', fr: 'Télécharger la mise à jour', ja: 'アップデートをダウンロード', zh: '下载更新', zht: '下載更新', ko: '업데이트 다운로드', ru: 'Скачать обновление' },
     updLater:   { es: 'Más tarde', en: 'Later', pt: 'Mais tarde', fr: 'Plus tard', ja: 'あとで', zh: '稍后', zht: '稍後', ko: '나중에', ru: 'Позже' },
   };
+  const DE = {"nav": "Hauptnavigation", "home": "Start", "legal": "Inoffizielles, kostenloses Fan-Spiel. Pokémon und seine Figuren gehören Nintendo / Creatures / GAME FREAK.", "author": "Android-Port von JayElDragon", "companion": "Dein Partner", "last": "Letzter Lauf", "time": "Zeit", "kills": "K.O.s", "level": "Level", "empty": "Dein Abenteuer beginnt hier", "hint": "Dein erster Lauf erscheint hier.", "runs": "Läufe", "wins": "Siege", "editName": "Namen ändern", "trainerName": "Trainername", "save": "Speichern", "cancel": "Abbrechen", "enterName": "Gib deinen Namen ein", "nameLength": "Gib einen Namen mit 1 bis 24 Zeichen ein.", "nameSaved": "Name gespeichert: {name}", "menuBg": "Menühintergrund", "menuBgSub": "Originalszenen mit animierten Pokémon", "pond": "Teich", "menuMusic": "Menümusik", "menuMusicSub": "Normal oder Halloween; die Musik in Läufen bleibt gleich", "auto": "Automatisch", "normal": "Normal", "uiSize": "Text- und Menügröße", "uiSizeSub": "Kleiner zeigt mehr vom Bildschirm. Automatisch passt sich deinem Bildschirm an. Gilt sofort (das Menü lädt neu)", "updTitle": "Neues Update verfügbar!", "updVersion": "Version {tag} (du hast Revision {cur}).", "updText": "Lade die neue APK herunter und installiere sie über die aktuelle: Dein Fortschritt bleibt erhalten.", "updDownload": "Update herunterladen", "updLater": "Später"};
+  for (const [k, v] of Object.entries(DE)) if (D[k]) D[k].de = v;
   const lang = () => {
     const l = (document.documentElement.lang || 'en').toLowerCase();
     if (l === 'zht' || l.startsWith('zh-tw') || l.startsWith('zh-hk') || l.includes('hant')) return 'zht';
     const k = l.split('-')[0];
-    return ['es', 'en', 'pt', 'fr', 'ja', 'zh', 'ko', 'ru'].includes(k) ? k : 'en';
+    return ['es', 'en', 'pt', 'fr', 'ja', 'zh', 'ko', 'ru', 'de'].includes(k) ? k : 'en';
   };
   window.pbLang = lang;
   window.pbT = (key, vars) => {
