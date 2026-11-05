@@ -539,3 +539,34 @@ html #ui .hud-tl .tl-name { color: #fff !important; -webkit-text-stroke: 4px #1b
 html #ui .hud-tl .tl-evo, html #ui .hud-tl .tl-evo * { color: #fff !important; -webkit-text-stroke: 3px #1b1236; paint-order: stroke fill; }
 html #ui .hud-tl .tl-types > * { box-shadow: 0 2px 0 rgba(27,18,54,.6) !important; }
 html #ui .hud-tl .tl-medal { filter: drop-shadow(0 3px 0 rgba(27,18,54,.55)); }
+
+/* ===== Menú de pausa reorganizado (propuesta A de JayElDragon) =====
+   Izquierda: tarjeta compacta del Pokémon con las 6 estadísticas a la vista; debajo, Continuar grande y los
+   botones en parejas, con Guardar y salir y Rendirse al final. Derecha: pestañas y movimientos en cuadrícula. */
+html #ui .pz > .pz-hero { overflow: visible !important; grid-template-columns: 44px minmax(0, 1fr) !important; gap: 4px 8px !important; padding: 8px 10px !important; align-content: start !important; }
+html #ui .pz > .pz-hero .sm-av { width: 44px !important; height: 44px !important; }
+html #ui .pz > .pz-hero .sm-av img { width: 44px !important; height: 44px !important; }
+html #ui .pz > .pz-hero small { font-size: 9px !important; line-height: 1.25 !important; }
+html #ui .pz > .pz-hero .pz-name h2 { font-size: 18px !important; line-height: 1.05 !important; }
+html #ui .pz > .pz-hero .pz-bars { grid-column: 1 / -1 !important; gap: 3px !important; }
+html #ui .pz > .pz-hero .pz-bar { height: 12px !important; font-size: 10px !important; }
+html #ui .pz > .pz-hero .pz-kpis { grid-column: 1 / -1 !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 4px !important; margin: 2px 0 0 !important; }
+html #ui .pz > .pz-hero .sm-kpi { grid-column: auto !important; padding: 3px 4px !important; min-height: 0 !important; gap: 0 !important; }
+html #ui .pz > .pz-hero .sm-kpi b { font-size: 13px !important; line-height: 1.1 !important; }
+html #ui .pz > .pz-hero .sm-kpi span { font-size: 9px !important; line-height: 1.1 !important; }
+
+html #ui .pz > .sm-foot { max-height: none !important; overflow: visible !important; }
+html #ui .pz > .sm-foot .actions { gap: 5px !important; }
+html #ui .pz > .sm-foot .actions > .btn { min-height: 32px !important; padding: 4px 6px !important; font-size: 12.5px !important; order: 3; }
+html #ui .pz > .sm-foot .actions > .btn.big { order: 0 !important; grid-column: 1 / -1 !important; min-height: 38px !important; font-size: 16px !important; }
+html #ui .pz > .sm-foot .actions > .btn:nth-child(8) { order: 1; }
+html #ui .pz > .sm-foot .actions > .btn:nth-child(4) { order: 1; }
+html #ui .pz > .sm-foot .actions > .btn:nth-child(7) { order: 2; }
+html #ui .pz > .sm-foot .actions > .btn:nth-child(6) { order: 2; }
+html #ui .pz > .sm-foot .actions > .btn:nth-child(3) { order: 3; grid-column: 1 / -1 !important; }
+html #ui .pz > .sm-foot .actions > .pz-save { order: 4 !important; }
+html #ui .pz > .sm-foot .actions > .btn.red { order: 5 !important; }
+html #ui .pz > .sm-foot .actions > .btn:has(> img.uiicon:only-child) { display: none !important; }
+
+html #ui .pz .pz-ability { padding: 7px 10px !important; }
+html #ui .pz .pz-moves { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; gap: 6px !important; }
