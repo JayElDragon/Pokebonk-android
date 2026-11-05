@@ -13,3 +13,11 @@ site/index.html
 site/legal
 offline.js
 mirror.py
+# Port 0.9.9: copias del juego, anclas generadas y registros (se generan en local)
+site-*/
+porting/pristine-*/
+porting/web-*/
+porting/*.json
+porting/*.log
+porting/*.txt
+porting/mirror-old.py

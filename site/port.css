@@ -570,3 +570,22 @@ html #ui .pz > .sm-foot .actions > .btn:has(> img.uiicon:only-child) { display: 
 
 html #ui .pz .pz-ability { padding: 7px 10px !important; }
 html #ui .pz .pz-moves { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; gap: 6px !important; }
+
+/* 0.9.9: the sidebar gained "Builds" (8 buttons). Compact them so the panel fits the screen and the
+   home screen never scrolls (an overflowing sidebar shifted the logo, top bar and cards upwards). */
+.mm.jay-home { overflow: hidden !important; }
+.jay-sidebar { gap: calc(6 * var(--u)) !important; padding: calc(9 * var(--u)) calc(9 * var(--u)) !important; overflow: hidden; }
+.jay-sidebar .mm-item { height: calc(33 * var(--u)) !important; min-height: calc(33 * var(--u)) !important; padding-top: calc(2 * var(--u)) !important; padding-bottom: calc(2 * var(--u)) !important; border-radius: calc(13 * var(--u)) !important; }
+.jay-sidebar .mm-item .mm-ic { width: calc(24 * var(--u)) !important; height: calc(24 * var(--u)) !important; flex-basis: calc(24 * var(--u)); }
+.jay-sidebar .mm-ic img, .jay-sidebar .mm-ic svg { width: calc(23 * var(--u)) !important; height: calc(23 * var(--u)) !important; }
+.jay-sidebar .jay-donate .mm-ic svg { width: calc(23 * var(--u)) !important; height: calc(23 * var(--u)) !important; }
+.jay-sidebar .mm-tx small { margin-top: calc(1 * var(--u)); }
+/* 0.9.9: daily mutation names can be long ("Day and Night"): one line so the icon and subtitle stay inside the card. */
+.jay-actions :is(.endless,.mutation) .mm-tx b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.jay-actions .mutation .mm-tx b { font-size: calc(17 * var(--u)) !important; padding: 0 calc(2 * var(--u)); }
+
+/* 0.9.9: long move names (Burning Jealousy) in the 44px HUD slots: two lines, inside the slot. */
+html.pb-android #ui .hud-bl .slot .nm { white-space:normal; overflow:visible; left:1px; right:1px; top:2px; font-size:7.5px; line-height:1; letter-spacing:-.15px; overflow-wrap:normal; }
+/* roster tiles and region names: shrink instead of cutting */
+html.pb-android .ls-name { font-size:9px; letter-spacing:-.3px; text-overflow:clip; }
+html.pb-android .rg-tx b { font-size:13px; letter-spacing:-.2px; }

@@ -14,6 +14,7 @@ Código del port para Android de **PokéBonk**, un fan game web gratuito creado 
 - `site/updater.js` + `MainActivity`: aviso de actualización. Consulta la última release de este repositorio; el tag debe ser `v` + número de revisión (por ejemplo `v19`) y llevar el APK adjunto.
 - `patches/menu-navigation.js`: navegación de menús con mando.
 - `build.py`: script de compilación y firma del APK.
+- `porting/port099.py`: aplica el port sobre el juego web 0.9.9 (servidor local sin internet, controles, menús, navegación con mando). Necesita una copia local del juego en `porting/pristine-0.9.9` y el `mirror.py` de Charcher; `gen_edits.py` (con `auto.py` y `locate.py`) traduce los cambios del port anterior a los nombres minificados de cada versión nueva.
 
 ## Qué NO hay aquí
 El código, los gráficos, los sonidos, los modelos y los datos del juego pertenecen a su autor original y a terceros (por ejemplo, los sprites de PMD SpriteCollab tienen licencia CC BY-NC 4.0). No se distribuyen en este repositorio. Sin esos archivos el proyecto no se puede compilar.
