@@ -10,6 +10,8 @@ Código del port para Android de **PokéBonk**, un fan game web gratuito creado 
 - `site/port-i18n.js`: textos del port en 9 idiomas (ES, EN, PT, FR, JA, ZH, ZHT, KO, RU).
 - `site/companion.js`, `site/preferences.js`: panel de compañero y edición del nombre del entrenador.
 - `site/donate.js`: botón de donaciones al Ko-fi de JayElDragon.
+- `site/ui-scale.js`: opción «Tamaño de textos y menús» (automático para pantallas bajas de móvil).
+- `site/updater.js` + `MainActivity`: aviso de actualización. Consulta la última release de este repositorio; el tag debe ser `v` + número de revisión (por ejemplo `v19`) y llevar el APK adjunto.
 - `patches/menu-navigation.js`: navegación de menús con mando.
 - `build.py`: script de compilación y firma del APK.
 

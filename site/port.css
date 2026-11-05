@@ -473,3 +473,20 @@ html .mm.jay-home:not(.auth) .mm-top {zoom:1 !important;}
 .jd-go { display: inline-flex !important; align-items: center !important; gap: 8px; font-size: 19px !important; }
 .jd-btn-ic svg { width: 30px; height: 30px; display: block; }
 .jd-hint { margin: 10px 0 0; text-align: center; font-size: 11px; opacity: .7; }
+
+/* ===== Cuadros de texto en partida más pequeños y discretos (consejos, avisos y carteles) ===== */
+.run-hint { max-width: min(300px, 100vw - 160px) !important; padding: 4px 10px 4px 4px !important; gap: 7px !important; border-radius: 14px !important; opacity: .9; }
+.run-hint .rh-ic { width: 26px !important; height: 26px !important; }
+.run-hint .rh-ic img { width: 19px !important; height: 19px !important; }
+.run-hint b { font-size: 11px !important; line-height: 1.1 !important; }
+.run-hint span { font-size: 9.5px !important; line-height: 1.2 !important; }
+.toast { font-size: 11px !important; padding: 4px 12px 4px 5px !important; gap: 6px !important; opacity: .92; }
+.toast img { width: 20px !important; height: 20px !important; }
+.banner h1 { font-size: 15px !important; padding: 2px 14px !important; }
+.banner p { font-size: 10px !important; padding: 2px 9px !important; }
+.app-notice { font-size: 12px !important; padding: 7px 16px !important; }
+
+/* ===== Aviso de actualización (updater.js) ===== */
+.jay-update-modal .ju-title { margin: 0 0 6px; text-align: center; font: 900 24px/1.15 var(--font-title); color: #ffe46b; text-shadow: 0 2px 0 #2a1566; }
+.jay-update-modal .ju-version { text-align: center; }
+.jay-update-modal .jd-note { justify-content: center; text-align: center; }

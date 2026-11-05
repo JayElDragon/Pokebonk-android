@@ -73,7 +73,94 @@ public class MainActivity extends Activity {
         }
     };
 
+    // ---------- actualizador (como el de Pokémon Survivors) ----------
+    // Al abrir el juego pregunta a GitHub por la última release de este repositorio. Si su número de revisión
+    // (tag "v19", o "...android19") es mayor que el versionCode instalado, el juego muestra un aviso para
+    // descargar el APK nuevo en el navegador. Sin internet o sin release, no hace nada.
+    static final String UPDATE_REPO = "JayElDragon/Pokebonk-android";
+    private volatile String pendingUpdate = "";
+
+    private long installedVersionCode() {
+        try {
+            android.content.pm.PackageInfo p = getPackageManager().getPackageInfo(getPackageName(), 0);
+            return Build.VERSION.SDK_INT >= 28 ? p.getLongVersionCode() : p.versionCode;
+        } catch (Exception e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    static long revisionOf(String tag) {
+        if (tag == null) return -1;
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("android(\\d+)").matcher(tag);
+        if (m.find()) return Long.parseLong(m.group(1));
+        m = java.util.regex.Pattern.compile("(\\d+)").matcher(tag);
+        long last = -1;
+        while (m.find()) last = Long.parseLong(m.group(1));
+        return last;
+    }
+
+    private void checkForUpdate() {
+        new Thread(() -> {
+            java.net.HttpURLConnection c = null;
+            try {
+                c = (java.net.HttpURLConnection) new java.net.URL("https://api.github.com/repos/" + UPDATE_REPO + "/releases/latest").openConnection();
+                c.setConnectTimeout(8000);
+                c.setReadTimeout(8000);
+                c.setRequestProperty("User-Agent", "PokeBonkAndroid");
+                c.setRequestProperty("Accept", "application/vnd.github+json");
+                if (c.getResponseCode() != 200) return;
+                String body;
+                try (InputStream in = c.getInputStream()) {
+                    body = new String(readAll(in), "UTF-8");
+                }
+                JSONObject j = new JSONObject(body);
+                String tag = j.optString("tag_name", "");
+                long rev = revisionOf(tag), cur = installedVersionCode();
+                if (rev <= cur) return;
+                String page = j.optString("html_url", "https://github.com/" + UPDATE_REPO + "/releases");
+                String url = page;
+                org.json.JSONArray assets = j.optJSONArray("assets");
+                if (assets != null) {
+                    for (int i = 0; i < assets.length(); i++) {
+                        JSONObject a = assets.optJSONObject(i);
+                        if (a != null && a.optString("name", "").toLowerCase(Locale.ROOT).endsWith(".apk")) {
+                            url = a.optString("browser_download_url", page);
+                            break;
+                        }
+                    }
+                }
+                JSONObject info = new JSONObject();
+                info.put("tag", tag);
+                info.put("name", j.optString("name", tag));
+                info.put("cur", String.valueOf(cur));
+                info.put("url", url);
+                pendingUpdate = info.toString();
+                menuHandler.post(() -> {
+                    if (web != null) web.evaluateJavascript("window.pbUpdateFound && window.pbUpdateFound(" + pendingUpdate + ")", null);
+                });
+            } catch (Exception ignored) {
+            } finally {
+                if (c != null) c.disconnect();
+            }
+        }, "pb-update-check").start();
+    }
+
     public final class MenuBridge {
+        // El aviso del juego pide la información si llegó antes de que el menú estuviera listo.
+        @JavascriptInterface public String updateInfo() {
+            return pendingUpdate;
+        }
+        // Abre la descarga en el navegador; solo enlaces de este repositorio de GitHub.
+        @JavascriptInterface public void openUpdate(String url) {
+            if (url == null || !url.startsWith("https://github.com/" + UPDATE_REPO + "/")) return;
+            menuHandler.post(() -> {
+                try {
+                    startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url))
+                            .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK));
+                } catch (Exception ignored) {
+                }
+            });
+        }
         @JavascriptInterface public void setMenuMode(boolean enabled) {
             menuMode = enabled;
             if (!enabled) menuHandler.post(() -> stopHat());
@@ -292,6 +379,7 @@ public class MainActivity extends Activity {
         } else {
             web.loadUrl(ORIGIN);
         }
+        checkForUpdate();
     }
 
     // ---------- servidor local ----------
