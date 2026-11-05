@@ -418,11 +418,6 @@ html .mm.jay-home:not(.auth) .mm-top {zoom:1 !important;}
   html.pb-android #ui .tl-lvl { padding:2px 8px; bottom:-8px; }
   html.pb-android #ui .tl-lvl b { font-size:17px; }
   html.pb-android #ui .tl-plate { min-width:135px; max-width:180px; margin:7px 0 0 -20px; padding:6px 10px 7px 28px; }
-  html.pb-android #ui .hud-top { top:10px; max-width:calc(100vw - 470px); padding:8px 10px; }
-  html.pb-android #ui .ht-l { padding-right:8px; }
-  html.pb-android #ui .ht-biome { font-size:13px; white-space:normal; }
-  html.pb-android #ui .ht-row { flex-wrap:wrap; font-size:11px; }
-  html.pb-android #ui .ht-c { padding:0 8px; }
   html.pb-android #ui .hud-tr { top:10px; right:calc(64px + env(safe-area-inset-right)); gap:7px; transform:none; scale:1; }
   html.pb-android #ui .hud-tr .minimap { width:clamp(105px,calc(24vh * var(--mm,1)),140px); height:clamp(105px,calc(24vh * var(--mm,1)),140px); }
   html.pb-android #ui .hud-tr .counter { font-size:14px; }
@@ -438,19 +433,44 @@ html .mm.jay-home:not(.auth) .mm-top {zoom:1 !important;}
 }
 
 @media (max-width:1100px) and (orientation:landscape) {
-  html.pb-android #ui .hud-top { width:min(330px,calc(100vw - 470px)); grid-template-columns:minmax(0,1fr) auto; gap:5px 8px; padding:8px 10px; }
-  html.pb-android #ui .ht-l { grid-column:1; grid-row:1; padding:0; overflow:hidden; }
-  html.pb-android #ui .ht-biome { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
-  html.pb-android #ui .ht-r { grid-column:2; grid-row:1; padding:0; }
-  html.pb-android #ui .ht-c { grid-column:1/-1; grid-row:2; flex-direction:row; justify-content:center; flex-wrap:wrap; margin:0; padding:0; gap:7px; }
-  html.pb-android #ui .timer { font-size:24px; padding:3px 12px 3px 34px; }
-  html.pb-android #ui .timer:before { width:17px; height:17px; left:8px; margin-top:-8.5px; }
-  html.pb-android #ui .runclock b { font-size:16px; }
-  html.pb-android #ui .runclock small { font-size:10px; max-width:100px; white-space:normal; text-align:right; }
+  /* One row between the portrait and the minimap. The game scales and centres .hud-top through inline styles: overridden here.
+     ponytail: this bar ignores the game's "HUD scale" setting; offsets come from .tl-plate (max 180px plus its skewed edge) and .minimap. */
+  html.pb-android #ui .hud-top { left:calc(max(12px,env(safe-area-inset-left)) + 250px)!important; right:calc(74px + env(safe-area-inset-right) + clamp(105px,calc(24vh * var(--mm,1)),140px)); width:auto; transform:none!important; top:10px; display:flex; align-items:center; gap:8px; padding:7px 10px 4px; border-radius:12px; }
+  html.pb-android #ui .hud-top:before { height:3px; border-radius:12px 12px 0 0; }
+  html.pb-android #ui .mut-hud { left:0; right:auto; top:calc(100% + 8px); bottom:auto; margin:0; transform:none; }
+  html.pb-android #ui .ht-l { flex:1 1 0; min-width:72px; gap:1px; padding:0; overflow:hidden; }
+  html.pb-android #ui .ht-biome { font-size:13px; overflow:hidden; text-overflow:ellipsis; }
+  html.pb-android #ui .ht-row { gap:4px; overflow:hidden; }
+  html.pb-android #ui .ht-pips { gap:2px; }
+  html.pb-android #ui .ht-pips i { width:11px; height:11px; border-width:1.5px; flex:none; }
+  html.pb-android #ui .ht-pips i:after { display:none; }
+  html.pb-android #ui .ht-zone { font-size:11px; }
+  html.pb-android #ui .ht-tier { font-size:9px; letter-spacing:.5px; padding:0 6px; }
+  html.pb-android #ui .ht-c { flex:0 1 auto; min-width:0; flex-direction:row; margin:0; padding:0; gap:6px; }
+  html.pb-android #ui .timer { font-size:19px; padding:2px 9px 2px 25px; box-shadow:0 0 0 2px var(--paper); }
+  html.pb-android #ui .timer:before { width:14px; height:14px; left:6px; margin-top:-7px; }
+  html.pb-android #ui .timer:after { width:4px; height:4px; left:11px; margin-top:-2px; }
+  html.pb-android #ui .wallet { min-width:0; overflow:hidden; gap:4px; padding:1px 4px; box-shadow:none; }
+  html.pb-android #ui .wl-gold>img { width:18px; height:18px; }
+  html.pb-android #ui .wl-gold>b { font-size:15px; }
+  html.pb-android #ui .wl-prices { gap:3px; padding-left:4px; }
+  html.pb-android #ui .wl-chip { height:19px; font-size:12px; gap:2px; padding:0 5px 0 2px; }
+  html.pb-android #ui .wl-chip>img, html.pb-android #ui .wl-chip>.wl-mon { width:16px!important; height:16px!important; }
+  html.pb-android #ui .ht-r { flex:none; padding:0; }
+  html.pb-android #ui .runclock b { font-size:14px; }
+  html.pb-android #ui .runclock small { font-size:10px; max-width:96px; overflow:hidden; text-overflow:ellipsis; }
+  html.pb-android .run-hint { top:calc(62px + env(safe-area-inset-top))!important; }
   html.pb-android #ui .tl-head { flex-wrap:wrap; gap:3px; }
   html.pb-android #ui .tl-name { font-size:18px; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
   html.pb-android #ui .tl-evo { white-space:normal; font-size:12px; }
   html.pb-android #ui .tc-fs { display:none!important; }
+}
+/* Narrower phones: redundant data goes first (zone pips, record note, total clock). */
+@media (max-width:900px) and (orientation:landscape) {
+  html.pb-android #ui .ht-pips, html.pb-android #ui .runclock small { display:none; }
+}
+@media (max-width:820px) and (orientation:landscape) {
+  html.pb-android #ui .ht-r { display:none; }
 }
 
 /* ===== Donaciones (donate.js): botón bajo Ajustes y ventana con el enlace a Ko-fi ===== */
