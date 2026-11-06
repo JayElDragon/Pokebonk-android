@@ -97,7 +97,8 @@
       const ratios = [m.scrollHeight / Math.max(1, m.clientHeight)];
       for (const c of m.querySelectorAll('.cards')) if (c.offsetParent) ratios.push(c.scrollWidth / Math.max(1, c.clientWidth));
       const over = Math.max(...ratios);
-      if (over > 1.01 && over < 1.6 && k > 0.62) k = Math.max(0.62, k / over - 0.005);
+      const min = m.classList.contains('shop-modal') ? 0.85 : 0.62; // las tiendas, como mucho un 15 % más pequeñas
+      if (over > 1.01 && over < 1.6 && k > min) k = Math.max(min, k / over - 0.005);
       else if (k < 1 && over < 0.93) k = Math.min(1, k * Math.min(1.08, 0.98 / over));
       else continue;
       k = Math.round(k * 1000) / 1000;
