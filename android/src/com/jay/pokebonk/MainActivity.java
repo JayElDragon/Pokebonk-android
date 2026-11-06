@@ -46,8 +46,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Port Android de JayElDragon: sirve los archivos web del juego desde los assets del APK
- * a un WebView a pantalla completa:
+ * PokéBonk (port Android de JayElDragon): el juego web copiado por mirror.py, servido desde los assets del APK
+ * a un WebView a pantalla completa. Hace lo mismo que `mirror.py serve`:
  *  - sirve site/ (con el bundle ya parcheado con offline.js: no hace falta el servidor del juego);
  *  - sin internet: nada sale de la app (lo que falte en el APK se registra en logcat con la etiqueta PokeBonk).
  * Las partidas quedan en el localStorage del WebView (se conservan entre aperturas).
@@ -318,6 +318,13 @@ public class MainActivity extends Activity {
 
     @Override public boolean dispatchKeyEvent(KeyEvent event) {
         int code = event.getKeyCode();
+        // Android fabrica flechas de cruceta a partir del stick (eventos de respaldo, FLAG_FALLBACK). El juego ya lee el
+        // stick por su cuenta: si además llegaran estas flechas, cada movimiento del stick contaría dos veces y en los
+        // menús (subida de nivel, tiendas) se saltaría una opción. La cruceta física no lleva esta marca.
+        if ((event.getFlags() & KeyEvent.FLAG_FALLBACK) != 0 && (code == KeyEvent.KEYCODE_DPAD_UP
+                || code == KeyEvent.KEYCODE_DPAD_DOWN || code == KeyEvent.KEYCODE_DPAD_LEFT || code == KeyEvent.KEYCODE_DPAD_RIGHT)) {
+            return true;
+        }
         if (!menuMode) playDpadKey(event);
         if (event.getAction() == KeyEvent.ACTION_UP && consumedMenuKeys.remove(code)) return true;
         String command = menuCommand(code);

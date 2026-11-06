@@ -88,17 +88,23 @@
   }
   // Paneles emergentes (subida de nivel, tiendas, premios...): si no caben por poco, se reducen lo justo para verse
   // enteros sin desplazarse (mínimo 62 %). Las listas que de verdad son largas (más de un 60 % de sobra) no se tocan.
+  // Se escala con transform (no con zoom): en el WebView de la consola (Chrome 124) zoom descuadra las medidas que usa
+  // el mando y se saltaba opciones. El panel se hace 1/k más grande y se escala a k: cubre la pantalla exacta.
   const fitModals = () => {
     for (const m of document.querySelectorAll('.modal')) {
       if (!m.offsetParent) continue;
-      let z = parseFloat(m.style.zoom) || 1;
+      let k = Number(m.dataset.pbFit) || 1;
       const ratios = [m.scrollHeight / Math.max(1, m.clientHeight)];
       for (const c of m.querySelectorAll('.cards')) if (c.offsetParent) ratios.push(c.scrollWidth / Math.max(1, c.clientWidth));
       const over = Math.max(...ratios);
-      if (over > 1.01 && over < 1.6 && z > 0.62) z = Math.max(0.62, z / over - 0.005);
-      else if (z < 1 && over < 0.93) z = Math.min(1, z * Math.min(1.08, 0.98 / over));
+      if (over > 1.01 && over < 1.6 && k > 0.62) k = Math.max(0.62, k / over - 0.005);
+      else if (k < 1 && over < 0.93) k = Math.min(1, k * Math.min(1.08, 0.98 / over));
       else continue;
-      m.style.zoom = String(Math.round(z * 1000) / 1000);
+      k = Math.round(k * 1000) / 1000;
+      m.dataset.pbFit = String(k);
+      if (k >= 1) { for (const p of ['transform', 'transformOrigin', 'width', 'height', 'left', 'top', 'right', 'bottom']) m.style[p] = ''; continue; }
+      Object.assign(m.style, { transformOrigin: '0 0', transform: 'scale(' + k + ')', left: '0', top: '0', right: 'auto', bottom: 'auto',
+        width: (100 / k) + 'vw', height: (100 / k) + 'vh' });
     }
   };
   setInterval(fitModals, 120);

@@ -188,11 +188,6 @@ def port_changes(sp):
            'i=n&&(r.find(t=>t.live)??r.find(t=>!t.live&&t.claimable&&e.meta.eventReady(t.id)>0));if(!i)return null;'
            'let a=t(i.live?`event`:`event claim`,Q(i.art.icon,40),c(i.name),i.live?c(`¡Evento! Termina en {time}`,{time:z8(i.end-Date.now())}):c(`Terminado: reclama tus premios`),',
            'dos eventos en el menú')
-    # --- mando: en las tiendas (Meowth, Hypno) izquierda/derecha solo se mueven dentro de la misma fila (la derecha saltaba
-    #     en diagonal al botón Renovar de arriba); en el resto de menús la navegación es la original.
-    sp.add('menus', 'return Os(n,e,t,`band`)??Os(n,e,t,`cone`)??(r?null:Os(n,e,t,`any`))',
-           'return Os(n,e,t,`band`)??Os(n,e,t,`cone`)??(r?null:Os(n,e,t,`any`))',
-           'return Os(n,e,t,`band`)??(r&&e.closest?.(`.shop-modal`)?null:Os(n,e,t,`cone`))??(r?null:Os(n,e,t,`any`))', 'mando: izquierda/derecha en la fila')
     # --- stick derecho en menús: desplazamiento fluido (curva progresiva, en cada fotograma, sin perder fracciones de píxel)
     sp.add('menus', 'if(a){let t=js(hs)??As();t&&(t.scrollTop+=a*900*e)}', 'if(a){let t=js(hs)??As();t&&(t.scrollTop+=a*900*e)}',
            'window.__pbScrollV=a,window.__pbScrollT=a?js(hs)??As():null,window.__pbScrollAt=performance.now();',
@@ -212,7 +207,7 @@ def port_changes(sp):
     sp.add('menus', 'function Ss(e){if(!bs(e)||e.closest(`[aria-hidden="true"], .rotate-hint`))return!1;',
            '`[aria-hidden="true"], .rotate-hint`', '`[aria-hidden="true"], .rotate-hint, .logo-ver, .logo`', 'mando sin versión ni logo')
     # --- menú principal con mapa de mando propio (patches/home-nav.js): el cursor empieza siempre en Jugar
-    sp.add('menus', 'function ms(e){let t=hs;', 'function ms(e){', 'function ms(e){if(window.__pbHomeNav?.(e)||window.__pbPcNav?.(e))return;', 'menú principal: mapa de mando')
+    sp.add('menus', 'function ms(e){let t=hs;', 'function ms(e){', 'function ms(e){if(window.__pbHomeNav?.(e)||window.__pbPcNav?.(e)||window.__pbShopNav?.(e))return;', 'menú principal: mapa de mando')
     # --- main: resultados sin clasificación online: "Tus marcas · tier"
     sp.add('main', '{class:`sm-body`},f(e.coop?U(`Clasificación cooperativa`):U(`Clasificación`),',
            'f(e.coop?U(`Clasificación cooperativa`):U(`Clasificación`),',
@@ -282,7 +277,7 @@ def nav_code():
               'const a=performance.now()-(window.__pbScrollAt||0)<200?window.__pbScrollV||0:0,el=window.__pbScrollT;'
               'if(a&&el&&el.isConnected){acc+=Math.sign(a)*Math.pow(Math.abs(a),1.6)*1500*dt;const d=Math.trunc(acc);'
               'if(d){el.style.scrollBehavior=`auto`;el.scrollTop+=d;acc-=d}}else acc=0;requestAnimationFrame(f)};requestAnimationFrame(f)})();\n')
-    return '/* JAY_MENU_NAV_START */\n' + code + expose + read(os.path.join(ROOT, 'patches', 'home-nav.js')) + read(os.path.join(ROOT, 'patches', 'pc-nav.js')) + '/* JAY_MENU_NAV_END */\n'
+    return '/* JAY_MENU_NAV_START */\n' + code + expose + read(os.path.join(ROOT, 'patches', 'home-nav.js')) + read(os.path.join(ROOT, 'patches', 'pc-nav.js')) + read(os.path.join(ROOT, 'patches', 'shop-nav.js')) + '/* JAY_MENU_NAV_END */\n'
 
 
 def add_import(text, chunk_prefix, export_name, local, what):
