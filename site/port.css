@@ -589,3 +589,150 @@ html.pb-android #ui .hud-bl .slot .nm { white-space:normal; overflow:visible; le
 /* roster tiles and region names: shrink instead of cutting */
 html.pb-android .ls-name { font-size:9px; letter-spacing:-.3px; text-overflow:clip; }
 html.pb-android .rg-tx b { font-size:13px; letter-spacing:-.2px; }
+
+/* 0.9.9: dos eventos activos a la vez (el jugador elige cuál jugar): tarjetas lado a lado, a media anchura */
+.jay-actions:has(.event + .event) .event { grid-column:auto !important; padding-left:calc(5 * var(--u)) !important; padding-right:calc(16 * var(--u)) !important; }
+.jay-actions:has(.event + .event) .event .mm-ic { width:calc(32 * var(--u)) !important; height:calc(32 * var(--u)) !important; flex:0 0 calc(32 * var(--u)); }
+.jay-actions:has(.event + .event) .event .mm-ic img { width:calc(26 * var(--u)) !important; height:calc(26 * var(--u)) !important; }
+.jay-actions:has(.event + .event) .event .mm-tx b { font-size:calc(12.5 * var(--u)) !important; line-height:1.05; white-space:normal; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
+.jay-actions:has(.event + .event) .event .mm-tx small { font-size:calc(7.5 * var(--u)); white-space:normal; }
+.jay-actions:has(.event + .event) .event::after { font-size:calc(22 * var(--u)); right:calc(4 * var(--u)); }
+
+/* 0.9.9 · La Gran Expedición: panel de extracción compacto y más transparente (antes tapaba el centro de la pantalla) */
+html.pb-android .xh-panel { padding:3px 10px 4px 4px !important; gap:0 7px !important; border-radius:12px !important; background:#0f1e2080 !important; width:min(270px,36vw) !important; min-width:0 !important; }
+html.pb-android .xh-panel.night { background:#300a1080 !important; }
+html.pb-android .xh-clock { width:34px !important; height:34px !important; box-shadow:inset 0 0 0 2px var(--ex-valley) !important; }
+html.pb-android .xh-clock b { font-size:10px !important; }
+html.pb-android .xh-clock small { display:none !important; }
+html.pb-android .xh-line { height:5px !important; margin:3px 0 4px !important; }
+html.pb-android .xh-win { width:8px !important; height:12px !important; margin-left:-4px !important; top:-4px !important; }
+html.pb-android .xh-now { height:13px !important; top:-4px !important; }
+html.pb-android .xh-status b { font-size:10.5px !important; }
+html.pb-android .xh-status { gap:6px !important; font-size:9.5px !important; }
+html.pb-android .xh-chips { gap:4px !important; font-size:9px !important; }
+html.pb-android .xh-danger { font-size:9px !important; padding:1px 6px 1px 2px !important; }
+html.pb-android .xh-danger b { min-width:16px !important; height:13px !important; font-size:9px !important; }
+html.pb-android .xh-bag, html.pb-android .xh-val { padding:1px 5px !important; font-size:9.5px !important; }
+html.pb-android .xh-bag img { width:12px !important; height:12px !important; }
+
+/* 0.9.9 · PC de Bill en la consola: todo cabe en pantalla (antes la mochila y el bolsillo quedaban bajo la barra inferior) */
+html.pb-android .ex-body:has(.ex-prep-wrap) { display:flex !important; flex-direction:column !important; height:calc(100dvh - 128px) !important; flex:none !important; min-height:0 !important; overflow:hidden !important; }
+html.pb-android .ex-prep-wrap { display:flex !important; flex-direction:column !important; gap:6px !important; flex:1 1 0 !important; min-height:0 !important; }
+html.pb-android .ex-prep-wrap > .ex-launch { flex:none !important; }
+html.pb-android .ex-prep-wrap > .ex-split { grid-template-columns:minmax(0,1fr) 262px !important; gap:8px !important; min-height:0 !important; flex:1 1 0 !important; }
+html.pb-android .ex-stage.prep { display:grid !important; grid-template-columns:226px minmax(0,1fr) !important; grid-template-rows:minmax(0,1fr) !important; gap:8px !important; min-height:0 !important; overflow:hidden !important; }
+html.pb-android .ex-stage.prep .ex-podium { display:flex !important; flex-direction:column !important; gap:4px !important; min-height:0 !important; overflow:hidden !important; padding:4px !important; }
+html.pb-android .ex-stage.prep .ex-who { display:none !important; }
+html.pb-android .ex-stage.prep .ex-doll { margin:0 !important; gap:2px 6px !important; }
+html.pb-android .ex-stage.prep .ex-doll .ex-mon { width:54px !important; height:54px !important; }
+html.pb-android .ex-stage.prep .ex-slot { gap:1px !important; padding:0 !important; }
+html.pb-android .ex-stage.prep .ex-slot .gcell { width:42px !important; height:42px !important; }
+html.pb-android .ex-stage.prep .ex-slot small { font-size:8px !important; }
+html.pb-android .ex-stage.prep .ex-carry { display:flex !important; flex-direction:column !important; gap:4px !important; padding:0 !important; margin:0 !important; }
+html.pb-android .ex-stage.prep .ex-packs { width:100% !important; padding:3px 4px !important; }
+html.pb-android .ex-stage.prep .ex-packs header { font-size:10px !important; margin:0 0 2px !important; }
+html.pb-android .ex-stage.prep .ex-grid.bag { grid-template-columns:repeat(6,31px) !important; gap:3px !important; justify-content:center !important; }
+html.pb-android .ex-stage.prep .ex-grid.bag .gcell { width:31px !important; height:31px !important; }
+html.pb-android .ex-stage.prep .ex-pocket { padding:3px 6px !important; gap:6px !important; margin:0 !important; }
+html.pb-android .ex-stage.prep .ex-pocket .gcell { width:34px !important; height:34px !important; }
+html.pb-android .ex-stage.prep .ex-pocket b { font-size:10px !important; }
+html.pb-android .ex-stage.prep .ex-pocket small { font-size:8.5px !important; }
+html.pb-android .ex-stage.prep .ex-showcase { min-height:0 !important; height:100% !important; overflow:auto !important; margin:0 !important; }
+html.pb-android .ex-stage.prep .ex-stage-report { display:none !important; }
+html.pb-android .ex-side { min-height:0 !important; overflow:hidden !important; gap:6px !important; }
+html.pb-android .ex-side .ex-pc { min-height:0 !important; flex:1 1 0 !important; padding:6px !important; }
+html.pb-android .ex-side .ex-card-h { padding:0 !important; min-height:0 !important; }
+html.pb-android .ex-side .ex-filters { gap:3px !important; margin:3px 0 !important; }
+html.pb-android .ex-side .ex-filters .pill, html.pb-android .ex-side .ex-filters select { font-size:10px !important; padding:3px 7px !important; min-height:0 !important; }
+html.pb-android .ex-side .ex-grid.pc { height:auto !important; min-height:0 !important; flex:1 1 0 !important; grid-template-columns:repeat(auto-fill,33px) !important; gap:4px !important; padding:5px !important; }
+html.pb-android .ex-side .ex-grid.pc .gcell { width:33px !important; height:33px !important; }
+html.pb-android .ex-side .ex-zones { gap:6px !important; }
+html.pb-android .ex-side .ex-zone { min-height:0 !important; padding:4px !important; font-size:10px !important; }
+html.pb-android .ex-stage.prep .ex-doll { grid-template-columns:42px 54px 42px !important; justify-content:center !important; width:100% !important; }
+html.pb-android .ex-stage.prep .ex-doll .ex-mon > * { width:100% !important; height:100% !important; }
+html.pb-android .ex-stage.prep .ex-podium::before, html.pb-android .ex-stage.prep .ex-podium::after { display:none !important; }
+html.pb-android .ex-side { height:100% !important; display:flex !important; flex-direction:column !important; }
+html.pb-android .ex-side .ex-pc { display:flex !important; flex-direction:column !important; overflow:hidden !important; }
+html.pb-android .ex-side .ex-card-h { display:flex !important; align-items:center !important; gap:6px !important; flex:none !important; }
+html.pb-android .ex-side .ex-card-h h3 { font-size:13px !important; margin:0 !important; white-space:nowrap !important; }
+html.pb-android .ex-side .ex-cap { gap:4px !important; margin-left:auto !important; }
+html.pb-android .ex-side .ex-cap b { font-size:11px !important; }
+html.pb-android .ex-side .ex-cap .btn { font-size:9.5px !important; padding:3px 7px !important; min-height:0 !important; box-shadow:none !important; }
+html.pb-android .ex-side .ex-filters { flex:none !important; flex-wrap:nowrap !important; overflow:hidden !important; }
+html.pb-android .ex-side .ex-filters .seg { flex-wrap:nowrap !important; gap:2px !important; }
+html.pb-android .ex-side .ex-zones { display:none !important; }
+html.pb-android .ex-stage.prep { height:100% !important; max-height:100% !important; align-self:stretch !important; }
+html.pb-android .ex-stage.prep .ex-podium { justify-content:flex-start !important; height:100% !important; }
+html.pb-android .ex-stage.prep .ex-doll { margin-top:2px !important; }
+html.pb-android .ex-stage.prep .ex-pocket { flex-direction:row !important; height:auto !important; align-items:center !important; width:100% !important; }
+html.pb-android .ex-stage.prep .ex-pocket .gcell img, html.pb-android .ex-stage.prep .ex-pocket .gcell svg { max-width:26px !important; max-height:26px !important; }
+html.pb-android .ex-stage.prep .ex-packs { padding:2px 4px !important; }
+html.pb-android .ex-stage.prep .ex-grid.bag { padding:3px !important; }
+
+/* 0.9.9 · PC de Bill: todas las pestañas caben en la pantalla de la consola */
+html.pb-android .ex-body { display:flex !important; flex-direction:column !important; height:calc(100dvh - 128px) !important; flex:none !important; min-height:0 !important; overflow:hidden !important; }
+html.pb-android .ex-body > * { flex:1 1 0 !important; min-height:0 !important; }
+html.pb-android .ex-body .ex-split { height:100% !important; min-height:0 !important; grid-template-columns:minmax(0,1fr) 262px !important; gap:8px !important; }
+html.pb-android .ex-body .ex-split.full { grid-template-columns:minmax(0,1fr) !important; }
+html.pb-android .ex-body .ex-stage { min-height:0 !important; height:100% !important; overflow:auto !important; }
+html.pb-android .ex-body .ex-stage.prep { overflow:hidden !important; }
+html.pb-android .ex-shelf .ex-tiles, html.pb-android .ex-shelf > div:not(.ex-card-h) { grid-template-columns:repeat(auto-fill,minmax(104px,1fr)) !important; gap:6px !important; }
+html.pb-android .ex-tile { padding:6px 4px !important; gap:2px !important; min-height:0 !important; }
+html.pb-android .ex-tile-ic, html.pb-android .ex-tile-ic img { width:34px !important; height:34px !important; }
+html.pb-android .ex-tile-name, html.pb-android .ex-tile b { font-size:11px !important; }
+html.pb-android .ex-tile small { font-size:9px !important; }
+html.pb-android .ex-tile .btn { font-size:10px !important; padding:3px 8px !important; min-height:0 !important; }
+html.pb-android .ex-card-h.striped { padding:5px 10px !important; }
+html.pb-android .ex-card-h.striped h3 { font-size:14px !important; }
+html.pb-android .ex-tiles { --cols:6 !important; grid-auto-rows:auto !important; gap:6px !important; }
+html.pb-android .ex-tile .ex-tile-name { min-height:0 !important; font-size:10.5px !important; }
+
+/* 0.9.9 · PC de Bill: Contratos, Mercado y Códice compactos para la pantalla de la consola */
+html.pb-android .ex-stage.contracts { display:grid !important; grid-template-columns:minmax(0,1fr) 232px !important; gap:8px !important; align-items:start !important; }
+html.pb-android .ex-con-list { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:6px !important; }
+html.pb-android .ex-con { padding:8px !important; gap:5px 6px !important; grid-template-columns:1fr !important; border-radius:12px !important; }
+html.pb-android .ex-con h4 { font-size:11.5px !important; line-height:1.2 !important; }
+html.pb-android .ex-con .ex-bar { height:13px !important; } html.pb-android .ex-con .ex-bar span { font-size:9.5px !important; line-height:13px !important; }
+html.pb-android .ex-con-rw { font-size:10.5px !important; gap:3px !important; flex-wrap:wrap !important; }
+html.pb-android .ex-con-rw img { width:13px !important; height:13px !important; }
+html.pb-android .ex-con .btn { font-size:10px !important; padding:5px 6px !important; min-height:0 !important; white-space:normal !important; }
+html.pb-android .ex-stamp { font-size:10px !important; padding:3px 8px !important; }
+html.pb-android .ex-perks { padding:8px !important; }
+html.pb-android .ex-perks h3 { font-size:12px !important; }
+html.pb-android .ex-perks p { font-size:10px !important; margin:0 0 4px !important; }
+html.pb-android .ex-perks ul { gap:1px !important; font-size:9.5px !important; }
+html.pb-android .ex-perks li { padding:2px 5px !important; grid-template-columns:52px 1fr auto !important; gap:4px !important; }
+html.pb-android .ex-codex { gap:6px !important; }
+html.pb-android .ex-stats-row { grid-template-columns:repeat(8,minmax(0,1fr)) !important; gap:4px !important; }
+html.pb-android .ex-st { padding:4px 2px !important; } html.pb-android .ex-st b { font-size:13px !important; } html.pb-android .ex-st small { font-size:8.5px !important; }
+html.pb-android .ex-legs { grid-template-columns:repeat(6,minmax(0,1fr)) !important; gap:5px !important; }
+html.pb-android .ex-leg { padding:5px 4px !important; border-radius:10px !important; }
+html.pb-android .ex-leg-ic { padding:2px !important; } html.pb-android .ex-leg-ic img { width:30px !important; height:30px !important; }
+html.pb-android .ex-leg b { font-size:10px !important; } html.pb-android .ex-leg small { font-size:8.5px !important; }
+html.pb-android .ex-leg p { font-size:8.5px !important; margin:2px 0 0 !important; line-height:1.2 !important; }
+html.pb-android .ex-bulk { padding:6px 10px !important; gap:8px !important; } html.pb-android .ex-bulk b { font-size:12px !important; } html.pb-android .ex-bulk small { font-size:9.5px !important; }
+html.pb-android .ex-bulk .btn { font-size:11px !important; padding:5px 10px !important; min-height:0 !important; }
+html.pb-android .ex-shelf { gap:4px !important; } html.pb-android .ex-stage.market { gap:6px !important; }
+html.pb-android .ex-stage.market .ex-tiles { grid-template-columns:repeat(6,minmax(0,1fr)) !important; }
+html.pb-android .ex-stage.market .ex-tile-ic { width:30px !important; height:30px !important; } html.pb-android .ex-stage.market .ex-tile-ic img { width:28px !important; height:28px !important; }
+html.pb-android .ex-legs { grid-template-columns:repeat(9,minmax(0,1fr)) !important; }
+html.pb-android .ex-leg p { display:none !important; }
+html.pb-android .ex-stage.forge .ex-stack { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:8px !important; align-items:start !important; }
+html.pb-android .ex-stage.forge .ex-card { padding-bottom:6px !important; }
+html.pb-android .ex-stage.forge .ex-card p, html.pb-android .ex-stage.forge .ex-card small { font-size:10.5px !important; margin:4px 8px !important; }
+html.pb-android .ex-stage.forge .dz, html.pb-android .ex-stage.forge [class*=drop] { min-height:56px !important; padding:6px !important; font-size:11px !important; }
+html.pb-android .ex-stage .ex-card-h.striped { padding:4px 10px !important; } html.pb-android .ex-stage .ex-card-h h3 { font-size:13px !important; }
+html.pb-android .ex-stage.market, html.pb-android .ex-stage.forge { display:grid !important; grid-template-columns:minmax(0,1fr) 200px !important; grid-template-rows:minmax(0,1fr) !important; gap:8px !important; overflow:hidden !important; }
+html.pb-android .ex-stage.market > .ex-stack, html.pb-android .ex-stage.forge > .ex-stack { min-height:0 !important; overflow:auto !important; }
+html.pb-android .ex-stage.market > .ex-showcase, html.pb-android .ex-stage.forge > .ex-showcase { min-height:0 !important; height:100% !important; overflow:auto !important; margin:0 !important; }
+html.pb-android .ex-stage.market .ex-tiles { grid-template-columns:repeat(4,minmax(0,1fr)) !important; }
+html.pb-android .ex-stage.forge .ex-stack { grid-template-columns:1fr !important; }
+html.pb-android .ex-showcase .ex-help { padding:6px 8px !important; gap:4px !important; }
+html.pb-android .ex-showcase .ex-help > img, html.pb-android .ex-showcase .ex-help > svg { width:40px !important; height:40px !important; }
+html.pb-android .ex-showcase .ex-help p { font-size:10.5px !important; margin:2px 0 !important; line-height:1.3 !important; }
+html.pb-android .ex-showcase .ex-help h4, html.pb-android .ex-showcase .ex-help h5, html.pb-android .ex-showcase .ex-help b { font-size:10.5px !important; }
+html.pb-android .ex-showcase .ex-help .gcell { width:26px !important; height:26px !important; }
+html.pb-android .ex-showcase .ex-help li, html.pb-android .ex-showcase .ex-help > div > div { font-size:10px !important; gap:4px !important; padding:1px 0 !important; }
+
+/* 0.9.9: etiquetas de tipo en las cartas de subida de nivel sin partirse (Normal) */
+html.pb-android .modal .cards .card .chip { white-space:nowrap !important; flex:none !important; }

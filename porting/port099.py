@@ -19,7 +19,8 @@ ASSETS = os.path.join(ROOT, 'site', 'assets')
 MAIN = 'main-Cx4tF-jA-mw3e1u3x.js'     # partida, HUD, cliente del servidor, arranque de la app
 MENUS = 'menus-1ZFEe0vd-mw3e1u3x.js'   # menús, mando, retratos, ajustes
 ENTRY = 'main-DfdwqtE9-mw3e1u3x.js'    # arranque e idiomas
-FILES = {'main': MAIN, 'menus': MENUS, 'entry': ENTRY}
+DP = 'defineProperty-5g46wf9l-mw3e1u3x.js'  # datos comunes (tabla de eventos...)
+FILES = {'main': MAIN, 'menus': MENUS, 'entry': ENTRY, 'dp': DP}
 
 
 def read(path):
@@ -100,7 +101,8 @@ FIX = {
     68: [('(pbAndroidSyncMenu(this),', '(window.pbAndroidSyncMenu?.(this),')],
     71: [('pbSyncMenuBackground(this,e);pbSyncMenuMusic(this,e);',
           'window.pbSyncMenuBackground?.(this,e);window.pbSyncMenuMusic?.(this,e);')],
-    13: [('xn(`', 'zn(`')],                                       # ruta de recursos
+    13: [('xn(`', 'zn(`')],
+    7: [('let D=window.__pbDpad,', 'let D=null,')],  # la cruceta ya llega por el mando; la copia de Java podía quedarse pegada                                       # ruta de recursos
 }
 
 
@@ -149,6 +151,68 @@ def port_changes(sp):
            'this.input.touchStick||(this.input.stickX=this.input.stickY=0)}', 'joystick táctil (mando)')
     sp.add('main', 'e.startsWith(`Mouse`)&&this.release(e);this.mouseDown=[!1,!1,!1],this.stickX=this.stickY=0}',
            'this.stickX=this.stickY=0}', 'this.touchStick||(this.stickX=this.stickY=0)}', 'joystick táctil (entrada)')
+    # --- el personaje NUNCA se mueve solo con el mando: zona muerta del 12 % para el stick físico (deriva);
+    #     el joystick táctil (touchStick) no se ve afectado.
+    sp.add('main', 'p=Math.max(-1,Math.min(1,d===0?n.stickX:d)),m=Math.max(-1,Math.min(1,f===0?n.stickY:f));',
+           'p=Math.max(-1,Math.min(1,d===0?n.stickX:d)),m=Math.max(-1,Math.min(1,f===0?n.stickY:f));',
+           'pbDz=!n.touchStick&&Math.hypot(n.stickX,n.stickY)<.12,p=Math.max(-1,Math.min(1,d===0?(pbDz?0:n.stickX):d)),m=Math.max(-1,Math.min(1,f===0?(pbDz?0:n.stickY):f));',
+           'zona muerta del mando')
+    # --- mando: si el stick físico está en el centro (ejes crudos < .15), su salida es 0 aunque la calibración
+    #     automática del juego haya aprendido un reposo desplazado (el personaje caminaba solo con el mando quieto).
+    sp.add('menus', 'let o=this.rmap,[s,c,l]=this.radial(a,Xo,yo),[u,d,f]=this.radial(a,o,bo);',
+           'let o=this.rmap,[s,c,l]=this.radial(a,Xo,yo),[u,d,f]=this.radial(a,o,bo);',
+           'let o=this.rmap,[s,c,l]=this.radial(a,Xo,yo),[u,d,f]=this.radial(a,o,bo);'
+           'Math.hypot(a[Xo.xi]??0,a[Xo.yi]??0)<.15&&(s=c=l=0);Math.hypot(a[o.xi]??0,a[o.yi]??0)<.15&&(u=d=f=0);',
+           'stick físico en reposo')
+    # --- mando: la calibración automática (drift) tomaba como "nuevo centro" cualquier inclinación sostenida unos
+    #     segundos (mandos 'generic' como el del Odin): al caminar recto el personaje se frenaba y al soltar el stick
+    #     caminaba solo. Ahora solo aprende un centro casi real (< .1) y radial ignora centros guardados mayores.
+    sp.add('menus', '(this.layout===`generic`||Math.hypot(a,o)<.45)&&(this.rest[t.xi]=a,this.rest[t.yi]=o)',
+           '(this.layout===`generic`||Math.hypot(a,o)<.45)', 'Math.hypot(a,o)<.1', 'calibración: sin centros inclinados')
+    sp.add('menus', 'radial(e,t,n){let r=((e[t.xi]??0)-this.rest[t.xi])*t.xs,i=((e[t.yi]??0)-this.rest[t.yi])*t.ys,',
+           'let r=((e[t.xi]??0)-this.rest[t.xi])*t.xs,i=((e[t.yi]??0)-this.rest[t.yi])*t.ys,',
+           'let pbRx=Math.abs(this.rest[t.xi]??0)<.1?this.rest[t.xi]??0:0,pbRy=Math.abs(this.rest[t.yi]??0)<.1?this.rest[t.yi]??0:0,'
+           'r=((e[t.xi]??0)-pbRx)*t.xs,i=((e[t.yi]??0)-pbRy)*t.ys,', 'calibración: centro limitado')
+    # --- La Gran Expedición local: el PC de Bill se abre también con el backend local (exp-local.js)
+    sp.add('menus', 'if(e.backend.kind!==`http`){e.notice(c(`La Expedición necesita conexión con el servidor.`));return}',
+           'e.backend.kind!==`http`', 'e.backend.kind!==`http`&&e.backend.kind!==`local`', 'Expedición local')
+    # --- eventos siempre activos: el jugador elige cuál jugar; cada uno se reinicia cada lo que duró en la web
+    sp.add('dp', 'function jr(e){let t=kr[e.id],n=Number.isFinite(t?.start)?t.start:Date.parse(e.start),r=Number.isFinite(t?.end)?t.end:Date.parse(e.end);',
+           'function jr(e){let t=kr[e.id],n=Number.isFinite(t?.start)?t.start:Date.parse(e.start),r=Number.isFinite(t?.end)?t.end:Date.parse(e.end);',
+           'function __pbEvCycle(id){if(window.pbEventCycle===!1)return null;let e=Er.find(e=>e.id===id);if(!e)return null;let s0=Date.parse(e.start),d=Date.parse(e.end)-s0;if(!(d>0))return null;let k=Math.floor((Date.now()-s0)/d),s=s0+k*d;return{start:s,end:s+d,cycle:k}}window.__pbEvWhen=__pbEvCycle;'
+           'function jr(e){let t=kr[e.id],pbW=__pbEvCycle(e.id),n=pbW?pbW.start:Number.isFinite(t?.start)?t.start:Date.parse(e.start),r=pbW?pbW.end:Number.isFinite(t?.end)?t.end:Date.parse(e.end);',
+           'rotación de eventos')
+    # --- menú: la segunda tarjeta de evento muestra también el otro evento activo (el jugador elige cuál jugar)
+    sp.add('menus', 'i=n&&r.find(t=>!t.live&&t.claimable&&e.meta.eventReady(t.id)>0);if(!i)return null;let a=t(`event claim`,Q(i.art.icon,40),c(i.name),c(`Terminado: reclama tus premios`),',
+           'i=n&&r.find(t=>!t.live&&t.claimable&&e.meta.eventReady(t.id)>0);if(!i)return null;let a=t(`event claim`,Q(i.art.icon,40),c(i.name),c(`Terminado: reclama tus premios`),',
+           'i=n&&(r.find(t=>t.live)??r.find(t=>!t.live&&t.claimable&&e.meta.eventReady(t.id)>0));if(!i)return null;'
+           'let a=t(i.live?`event`:`event claim`,Q(i.art.icon,40),c(i.name),i.live?c(`¡Evento! Termina en {time}`,{time:z8(i.end-Date.now())}):c(`Terminado: reclama tus premios`),',
+           'dos eventos en el menú')
+    # --- mando: en las tiendas (Meowth, Hypno) izquierda/derecha solo se mueven dentro de la misma fila (la derecha saltaba
+    #     en diagonal al botón Renovar de arriba); en el resto de menús la navegación es la original.
+    sp.add('menus', 'return Os(n,e,t,`band`)??Os(n,e,t,`cone`)??(r?null:Os(n,e,t,`any`))',
+           'return Os(n,e,t,`band`)??Os(n,e,t,`cone`)??(r?null:Os(n,e,t,`any`))',
+           'return Os(n,e,t,`band`)??(r&&e.closest?.(`.shop-modal`)?null:Os(n,e,t,`cone`))??(r?null:Os(n,e,t,`any`))', 'mando: izquierda/derecha en la fila')
+    # --- stick derecho en menús: desplazamiento fluido (curva progresiva, en cada fotograma, sin perder fracciones de píxel)
+    sp.add('menus', 'if(a){let t=js(hs)??As();t&&(t.scrollTop+=a*900*e)}', 'if(a){let t=js(hs)??As();t&&(t.scrollTop+=a*900*e)}',
+           'window.__pbScrollV=a,window.__pbScrollT=a?js(hs)??As():null,window.__pbScrollAt=performance.now();',
+           'stick derecho fluido')
+    # --- la pantalla no cambia nunca de modo: en Android siempre es táctil. El ratón virtual del Odin
+    #     («ODIN Station Virtual Mouse») emitía eventos de ratón con el mando y el juego pasaba al diseño de escritorio
+    #     (los menús se encogían) hasta el siguiente toque.
+    sp.add('menus', 'addEventListener(`pointerdown`,e=>{Us||(e.pointerType===`touch`?Xs(!0):e.pointerType===`mouse`&&Xs(!1))},{capture:!0}),addEventListener(`pointermove`,e=>{!Us&&Gs&&e.pointerType===`mouse`&&(e.movementX||e.movementY)&&Xs(!1)',
+           'e.pointerType===`touch`?Xs(!0):e.pointerType===`mouse`&&Xs(!1)', 'e.pointerType===`touch`&&Xs(!0)', 'modo táctil fijo (clic)')
+    sp.add('menus', 'addEventListener(`pointermove`,e=>{!Us&&Gs&&e.pointerType===`mouse`&&(e.movementX||e.movementY)&&Xs(!1)',
+           '!Us&&Gs&&e.pointerType===`mouse`&&(e.movementX||e.movementY)&&Xs(!1)', '!1', 'modo táctil fijo (movimiento)')
+    # --- PC de Bill: sin las pestañas Rivales y Comercio (ecos y mercado entre jugadores necesitan el servidor oficial)
+    sp.add('menus', ',[`rivals`,c(`Rivales`),`rival`],[`codex`,', ',[`rivals`,c(`Rivales`),`rival`]', '', 'PC de Bill sin Rivales')
+    sp.add('menus', ',[`trade`,c(`Comercio`),`friends`],[`forge`,', ',[`trade`,c(`Comercio`),`friends`]', '', 'PC de Bill sin Comercio')
+    sp.add('menus', '_4=[`prep`,`market`,`trade`,`forge`,`contracts`,`rivals`,`codex`]', '_4=[`prep`,`market`,`trade`,`forge`,`contracts`,`rivals`,`codex`]', '_4=[`prep`,`market`,`forge`,`contracts`,`codex`]', 'PC de Bill sin Rivales ni Comercio (Q/E)')
+    # --- mando: el logo y la etiqueta de versión (v0.9.9 / Beta) no reciben el foco (siguen funcionando al tocarlos)
+    sp.add('menus', 'function Ss(e){if(!bs(e)||e.closest(`[aria-hidden="true"], .rotate-hint`))return!1;',
+           '`[aria-hidden="true"], .rotate-hint`', '`[aria-hidden="true"], .rotate-hint, .logo-ver, .logo`', 'mando sin versión ni logo')
+    # --- menú principal con mapa de mando propio (patches/home-nav.js): el cursor empieza siempre en Jugar
+    sp.add('menus', 'function ms(e){let t=hs;', 'function ms(e){', 'function ms(e){if(window.__pbHomeNav?.(e)||window.__pbPcNav?.(e))return;', 'menú principal: mapa de mando')
     # --- main: resultados sin clasificación online: "Tus marcas · tier"
     sp.add('main', '{class:`sm-body`},f(e.coop?U(`Clasificación cooperativa`):U(`Clasificación`),',
            'f(e.coop?U(`Clasificación cooperativa`):U(`Clasificación`),',
@@ -213,8 +277,12 @@ def nav_code():
     code = rename_nav(code)
     expose = ('\nwindow.__pbPadMode=e=>Vo(e);window.__pbTouchMode=e=>Xs(e);\n'
               'Object.assign(window,{pbInstallAndroidControls,pbAndroidSyncMenu,pbSyncMenuBackground,pbSyncMenuMusic,'
-              'pbReadMenuBackground,pbReadMenuMusic});\n')
-    return '/* JAY_MENU_NAV_START */\n' + code + expose + '/* JAY_MENU_NAV_END */\n'
+              'pbReadMenuBackground,pbReadMenuMusic});\n'
+              '(()=>{let acc=0,last=0;const f=t=>{const dt=last?Math.min(.05,(t-last)/1000):0;last=t;'
+              'const a=performance.now()-(window.__pbScrollAt||0)<200?window.__pbScrollV||0:0,el=window.__pbScrollT;'
+              'if(a&&el&&el.isConnected){acc+=Math.sign(a)*Math.pow(Math.abs(a),1.6)*1500*dt;const d=Math.trunc(acc);'
+              'if(d){el.style.scrollBehavior=`auto`;el.scrollTop+=d;acc-=d}}else acc=0;requestAnimationFrame(f)};requestAnimationFrame(f)})();\n')
+    return '/* JAY_MENU_NAV_START */\n' + code + expose + read(os.path.join(ROOT, 'patches', 'home-nav.js')) + read(os.path.join(ROOT, 'patches', 'pc-nav.js')) + '/* JAY_MENU_NAV_END */\n'
 
 
 def add_import(text, chunk_prefix, export_name, local, what):
@@ -238,7 +306,7 @@ def offline(texts):
             fail('servidor local', f'{keys}: {len(hits)} coincidencias {sorted(hits)[:4]}')
         (f, got), = hits
         per.setdefault(f, {}).update(zip(keys.split(), got if isinstance(got, tuple) else (got,)))
-    local = read(os.path.join(ROOT, 'offline.js'))
+    local = read(os.path.join(ROOT, 'offline.js')) + '\n' + exp_parts()[1]
     fac = ns['FACTORY'].replace('@', NAME)
     for f, t in texts.items():
         names = per.get(f)
@@ -264,6 +332,7 @@ PORT_TAGS = '''    <script src="./port-i18n.js"></script>
     <script src="./donate.js" defer></script>
     <script src="./updater.js" defer></script>
     <script src="./pad-labels.js" defer></script>
+    <script src="./scroll-bars.js" defer></script>
 '''
 
 
@@ -276,6 +345,56 @@ def index_html():
     open(os.path.join(ROOT, 'site', 'index.html'), 'w', encoding='utf-8', newline='').write(html)
 
 
+EXP_NAMES = {  # $NOMBRE$ de exp-local.js -> nombre minificado en menus (patrón con un grupo)
+    'qW': r'function ([\w$]+)\(e,t,n=0,r=0\)\{let i=new [\w$]+\([\w$]+\(e,[\w$]+\(`\$\{t\.k\}',
+    'jW': r'[,;\s]([\w$]+)=e=>\{let t=[\w$]+\(e\)\.find;for\(let n of e\)',
+    'NW': r'function ([\w$]+)\(e\)\{let t=[\w$]+\.get\(e\.b\);if\(!t\)return 0;',
+    'FW': r'[,;\s]([\w$]+)=e=>[\w$]+\(e\)\?[\w$]+\[e\.r\]\*\(e\.sh\?3:1\):0',
+    'IW': r',([\w$]+)=e=>[\w$]+\(e\)\?Math\.max\(1,Math\.round\([\w$]+\[e\.r\]\*\(\.7\+e\.lv/30\)',
+    'LW': r',([\w$]+)=e=>\{let t=e\.rf\?\.length\?\?0;',
+    'RW': r',([\w$]+)=e=>Math\.round\([\w$]+\(\{\.\.\.e,d:100\}\)\*4\.5\+10\)',
+    'cG': r',([\w$]+)=e=>Math\.max\([\w$]+\.min,Math\.round\([\w$]+\(\{\.\.\.e,d:100\}\)\*[\w$]+\.share\)\)',
+    'uG': r',([\w$]+)=e=>[\w$]+\(e\)\.reduce\(\(e,t\)=>e\+[\w$]+\(t\),0\),[\w$]+=\{tax:',
+    'oG': r'function ([\w$]+)\(e\)\{return e\.over\.length\?',
+    'QW': r',([\w$]+)=e=>\{let t=1;for\(let n=1;n<[\w$]+\.length;n\+\+\)e>=',
+    'ZW': r',([\w$]+)=\[0,120,320,650,',
+    'tG': r',([\w$]+)=e=>5\+Math\.floor\([\w$]+\(e\)/3\)',
+    'eG': r',([\w$]+)=e=>Math\.round\(400\*1\.6\*\*',
+    '$W': r',([\w$]+)=\{base:40,step:10,max:120\}',
+    'dW': r',([\w$]+)=e=>[\w$]+\([\w$]+\.get\(e\.b\)\?\.kind\),[\w$]+=e=>\{let t=',
+    'fW': r',([\w$]+)=e=>\{let t=[\w$]+\.get\(e\.b\)\?\.kind;return [\w$]+\(t\)\?t:null\}',
+    'lW': r',([\w$]+)=new Map\([\w$]+\.map\(e=>\[e\.key,e\]\)\),[\w$]+=e=>e===`held`',
+    'qU': r',([\w$]+)=\[`held`,`band`,`charm`,`gem`\]',
+    'aW': r',([\w$]+)=\[\{key:`leg-moltres`',
+    'oW': r',([\w$]+)=\[\{key:`potion`',
+    'sW': r',([\w$]+)=\[\{key:`stardust`',
+    'iW': r',([\w$]+)=\[[\w$]+\(`choice-band`',
+    'YW': r',([\w$]+)=\{night:1200,',
+    'XW': r',([\w$]+)=\{start:300,aid:',
+    'sG': r'[,\s]([\w$]+)=\{share:\.3,min:4,wear:',
+    'dG': r',([\w$]+)=\{tax:\.1,',
+}
+
+
+def exp_parts():
+    src = read(os.path.join(ROOT, 'exp-local.js'))
+    a0, a1 = src.index('/* ==== PARTE A'), src.index('/* ==== FIN PARTE A ==== */')
+    b0 = src.index('/* ==== PARTE B')
+    return src[a0:a1], src[b0:]
+
+
+def exp_part_a(menus):
+    part, _ = exp_parts()
+    for key, pat in EXP_NAMES.items():
+        hits = set(re.findall(pat, menus))
+        if len(hits) != 1:
+            fail('Expedición local', f'{key}: {len(hits)} nombres {sorted(hits)[:4]}')
+        part = part.replace('$' + key + '$', hits.pop())
+    if re.search(r'\$[A-Za-z_$]{2}\$', part):
+        fail('Expedición local', 'quedan nombres sin resolver en la parte A')
+    return part + '\n'
+
+
 def main_():
     index_html()
     texts = {k: read(os.path.join(PRISTINE, v)) for k, v in FILES.items()}
@@ -284,7 +403,7 @@ def main_():
     texts = sp.apply()
     texts['main'] = add_import(texts['main'], 'defineProperty', 'pi', '__pbTiers', 'nombres de tier')
     last = texts['menus'].rfind('export{')
-    texts['menus'] = texts['menus'][:last] + nav_code() + texts['menus'][last:]
+    texts['menus'] = texts['menus'][:last] + nav_code() + exp_part_a(texts['menus']) + texts['menus'][last:]
     texts = offline(texts)
     for k, v in FILES.items():
         open(os.path.join(ASSETS, v), 'w', encoding='utf-8', newline='').write(texts[k])
