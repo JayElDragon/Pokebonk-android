@@ -208,6 +208,11 @@ def port_changes(sp):
            '`[aria-hidden="true"], .rotate-hint`', '`[aria-hidden="true"], .rotate-hint, .logo-ver, .logo`', 'mando sin versión ni logo')
     # --- menú principal con mapa de mando propio (patches/home-nav.js): el cursor empieza siempre en Jugar
     sp.add('menus', 'function ms(e){let t=hs;', 'function ms(e){', 'function ms(e){if(window.__pbHomeNav?.(e)||window.__pbPcNav?.(e)||window.__pbShopNav?.(e))return;', 'menú principal: mapa de mando')
+    # --- encargos diarios/semanales: el backend local necesita la definición de cada encargo (métrica y objetivo)
+    sp.add('dp', 'var jt=e=>xt.daily.flat().concat(xt.weekly.flat()).find(t=>t.id===e),',
+           'var jt=e=>xt.daily.flat().concat(xt.weekly.flat()).find(t=>t.id===e),',
+           'var jt=e=>xt.daily.flat().concat(xt.weekly.flat()).find(t=>t.id===e),__pbTD=(window.__pbTaskDef=e=>jt(e)),',
+           'definición de encargos')
     # --- main: resultados sin clasificación online: "Tus marcas · tier"
     sp.add('main', '{class:`sm-body`},f(e.coop?U(`Clasificación cooperativa`):U(`Clasificación`),',
            'f(e.coop?U(`Clasificación cooperativa`):U(`Clasificación`),',
